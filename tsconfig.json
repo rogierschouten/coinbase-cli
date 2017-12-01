@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "lib": [
+            "es2016"
+        ],
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "outDir": "./out",
+        "paths": {
+            "*": [
+                "*",
+                "typings/*"
+            ]
+        },
+        "preserveConstEnums": true,
+        "removeComments": true,
+        "rootDir": "./src",
+        "sourceMap": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "target": "es2016"
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "src/**/*"
+    ]
+}

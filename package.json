@@ -1,0 +1,30 @@
+{
+  "author": {
+    "name": "Rogier Schouten",
+    "url": "https://github.com/rogierschouten"
+  },
+  "bin": "./bin/coinbase",
+  "dependencies": {
+    "coinbase": "^2.0.6",
+    "fs-extra": "^4.0.2",
+    "yargs": "^10.0.3"
+  },
+  "description": "Commandline interface for the Coinbase API",
+  "devDependencies": {
+    "@types/fs-extra": "^4.0.5",
+    "@types/node": "^8.0.53",
+    "@types/yargs": "^8.0.2",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  },
+  "license": "ISC",
+  "name": "coinbase-cli",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf ./out",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc --watch"
+  },
+  "version": "1.0.0"
+}

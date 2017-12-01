@@ -1,0 +1,45 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "indent": [
+      true,
+      "tabs"
+    ],
+    "interface-name": [true, "never-prefix"],
+    "max-line-length": [true, 140],
+    "no-console": {
+      "options": [
+        "debug",
+        "error",
+        "info",
+        "log",
+        "time",
+        "timeEnd",
+        "trace"
+      ]
+    },
+    "quotemark": [
+      true,
+      "double"
+    ],
+    "trailing-comma": [true, {
+      "singleline": {
+        "arrays": "never",
+        "objects": "never",
+        "functions": "never",
+        "imports": "never",
+        "exports": "never",
+        "typeLiterals": "never"
+      },
+      "multiline": {
+        "arrays": "never",
+        "objects": "never",
+        "functions": "never",
+        "imports": "never",
+        "exports": "never",
+        "typeLiterals": "never"
+      },
+      "esSpecCompliant": true
+    }]
+  }
+}

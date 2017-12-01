@@ -1,0 +1,7 @@
+.vscode/
+out/test/
+src/
+typings/
+./index.js
+./tsconfig.json
+
