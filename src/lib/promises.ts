@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) Rogier Schouten <https://github.com/rogierschouten>
+ */
 
 export interface VoidDeferred {
 	resolve: () => void;

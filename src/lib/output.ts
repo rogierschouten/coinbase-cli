@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2017 Rogier Schouten <https://github.com/rogierschouten>
+ */
 
 /**
  * Allows to mock console output for unit tests; also, allows us to put trace logging behind an environment variable

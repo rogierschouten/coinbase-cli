@@ -1,12 +1,18 @@
+# coinbase-cli
 
-# TODO
+Command-line client for the API of https://coinbase.com
 
-* set/get variables (api keys)
+
+## TODO
+
+* disclaimer to agree to (once)
 * list accounts
 * buy/sell btc
 * set aliases for commands
 * version command
 * help command
-* disclaimer to agree to (once)
 * all other api operations
 
+## Copyright & License
+
+Copyright (c) 2017 Rogier Schouten <http://github.com/rogierschouten>. License: MIT.

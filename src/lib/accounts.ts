@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2017 Rogier Schouten <https://github.com/rogierschouten>
+ */
 import * as coinbase from "coinbase";
 
 import { CONFIG } from "./config";

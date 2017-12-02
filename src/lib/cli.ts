@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2017 Rogier Schouten <https://github.com/rogierschouten>
+ */
 import * as yargs from "yargs";
 
 import { cmdAccounts } from "./accounts";

@@ -1,4 +1,6 @@
-
+/**
+ * Copyright (c) 2017 Rogier Schouten <https://github.com/rogierschouten>
+ */
 import * as assert from "assert";
 import * as fse from "fs-extra";
 import * as os from "os";
