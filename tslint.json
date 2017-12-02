@@ -40,6 +40,7 @@
         "typeLiterals": "never"
       },
       "esSpecCompliant": true
-    }]
+    }],
+    "variable-name": false
   }
 }

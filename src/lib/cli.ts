@@ -1,6 +1,7 @@
 import * as yargs from "yargs";
 
-import { cmdGet, cmdSet, cmdUnSet, CONFIG } from "./config";
+import { cmdAccounts } from "./accounts";
+import { cmdGet, cmdSet, cmdUnSet } from "./config";
 import { output } from "./output";
 
 /**
@@ -42,8 +43,14 @@ yargs
 		handler: wrapCmd(cmdGet)
 	})
 	.command({
+		command: "accounts",
+		describe: "list all accounts",
+		builder: (args: yargs.Argv): yargs.Argv => args,
+		handler: wrapCmd(cmdAccounts)
+	})
+	.command({
 		command: "$0",
-		describe: "list the available commands",
+		describe: "default action",
 		builder: (args: yargs.Argv): yargs.Argv => args,
 		handler: () => output.log("This is a tool for trading on Coinbase on the command-line. Use 'coinbase help' to learn more.")
 	})
