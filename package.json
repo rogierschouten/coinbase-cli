@@ -3,7 +3,12 @@
     "name": "Rogier Schouten",
     "url": "https://github.com/rogierschouten"
   },
-  "bin": "./bin/coinbase",
+  "bin": {
+    "coinbase": "./bin/coinbase"
+  },
+  "bugs": {
+    "url": "https://github.com/rogierschouten/coinbase-cli/issues"
+  },
   "dependencies": {
     "coinbase": "^2.0.6",
     "fs-extra": "^4.0.2",
@@ -18,9 +23,25 @@
     "tslint": "^5.8.0",
     "typescript": "^2.6.2"
   },
-  "keywords": ["coinbase", "commandline", "coinbase api", "cryptocurrency", "trade", "bitcoin", "litecoin", "ethereum"],
+  "engines": {
+    "node": ">=8.2.0"
+  },
+  "keywords": [
+    "coinbase",
+    "commandline",
+    "coinbase api",
+    "cryptocurrency",
+    "trade",
+    "bitcoin",
+    "litecoin",
+    "ethereum"
+  ],
   "license": "MIT",
   "name": "coinbase-cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rogierschouten/coinbase-cli.git"
+  },
   "scripts": {
     "all": "npm run clean && npm run build",
     "build": "tsc",

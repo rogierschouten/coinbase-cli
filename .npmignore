@@ -4,4 +4,4 @@ src/
 typings/
 ./index.js
 ./tsconfig.json
-
+*.map
