@@ -1,17 +1,20 @@
 # coinbase-cli
 
-Command-line client for the API of https://coinbase.com
+This is a command-line utility that uses the Coinbase API to trade, deposit and withdraw cryptocurrencies.
 
+On busy days, it has happened that the Coinbase website was down while its underlying API services still worked. This command-line tool
+is my emergency backup, so that I can trade when everyone else is. Of course, there are many other use cases for a command-line tool such as
+easily automating trading tasks or inspecting the prices.
 
-## TODO
+## Work In Progress
 
-* disclaimer to agree to (once)
-* list accounts
-* buy/sell btc
-* set aliases for commands
-* version command
-* help command
-* all other api operations
+This is work in progress. Don't worry, you won't have to wait long. I'm working hard on it at the moment.
+
+Intended features:
+* Buy, Sell, Deposit, and Withdraw through command-line commands
+* Interactive mode
+
+The reason you see this unusable version on NPM is that I published an alpha version to see that the published project structure works.
 
 ## Copyright & License
 
