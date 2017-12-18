@@ -6,6 +6,7 @@
       "tabs"
     ],
     "interface-name": [true, "never-prefix"],
+    "max-classes-per-file": false,
     "max-line-length": [true, 140],
     "no-console": {
       "options": [
@@ -18,6 +19,7 @@
         "trace"
       ]
     },
+    "no-shadowed-variable": false,
     "quotemark": [
       true,
       "double"

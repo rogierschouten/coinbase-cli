@@ -16,3 +16,7 @@ indent_style = space
 [*.ts]
 indent_size = 4
 indent_style = tab
+
+[*.d.ts]
+indent_size = 4
+indent_style = space

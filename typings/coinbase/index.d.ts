@@ -13,9 +13,29 @@ export interface ClientConstructOpts {
      */
     apiSecret?: string;
     /**
+     * Undocumented, default https://api.coinbase.com/v2/
+     */
+    baseApiUri?: string;
+    /**
+     * Undocumented, default https://api.coinbase.com/oauth/token
+     */
+    tokenUri?: string;
+    /**
+     * Undocumented, by default contains some fixed SSL certificate
+     */
+    caFile?: string;
+    /**
+     * Undocumented
+     */
+    strictSSL?: boolean;
+    /**
      * OAuth2 access token
      */
     accessToken?: string;
+    /**
+     * Undocumented
+     */
+    refreshToken?: string;
     /**
      * API version in 'yyyy-mm-dd' format, see https://developers.coinbase.com/api/v2#changelog
      */
@@ -194,7 +214,7 @@ export interface BuyOpts {
      */
     currency: string;
     /**
-     * The ID of the payment method that should be used for the buy. (todo get payment methods)
+     * The ID of the payment method that should be used for the buy.
      */
     payment_method?: string;
     /**
@@ -252,7 +272,7 @@ export interface DepositOpts {
      */
     currency: string;
     /**
-     * The ID of the payment method that should be used for the buy. (todo get payment methods)
+     * The ID of the payment method that should be used for the buy.
      */
     payment_method?: string;
     /**
@@ -271,7 +291,7 @@ export interface WithdrawOpts {
      */
     currency: string;
     /**
-     * The ID of the payment method that should be used for the buy. (todo get payment methods)
+     * The ID of the payment method that should be used for the buy.
      */
     payment_method?: string;
     /**
@@ -292,6 +312,14 @@ export interface MoneyHash {
      * Currency e.g. "BTC" (see Client#getCurrencies() for available strings)
      */
     currency: string;
+}
+
+export interface PriceResult {
+    data: {
+        base: string;
+        amount: string;
+        currency: string;
+    }
 }
 
 export type ResourceType = "account" | "transaction" | "address" | "user" | "buy" | "sell" | "deposit" | "withdrawal" | "payment_method";
@@ -452,6 +480,35 @@ export class Address implements Resource {
 
 export type AccountType = "wallet" | "fiat" | "multisig" | "vault" | "multisig_vault";
 
+export type CurrencyType = "fiat" | "crypto";
+
+export interface AccountCurrency {
+    /**
+     * Code e.g. "EUR"
+     */
+    code: string,
+    /**
+     * Readable name e.g. "Euro"
+     */
+    name: string,
+    /**
+     * Hex RGB color e.g. '#0066cf'
+     */
+    color: string,
+    /**
+     * unknown
+     */
+    exponent: number;
+    /**
+     * CurrencyType
+     */
+    type: CurrencyType;
+    /**
+     * Only for cryptocurrencies: address format
+     */
+    address_regex?: string;
+}
+
 /**
  * Account resource represents all of a user’s accounts, including bitcoin, litecoin and ethereum wallets, fiat currency accounts,
  * and vaults. This is represented in the type field. It’s important to note that new types can be added over time so you want to
@@ -502,7 +559,7 @@ export class Account implements Resource {
     /**
      * Account’s currency (see Client#getCurrencies() for available strings)
      */
-    currency: string;
+    currency: AccountCurrency;
 
     /**
      * Balance
@@ -897,12 +954,12 @@ export class Sell implements Resource {
     /**
      * Status of the sell. Currently available values: created, completed, canceled
      */
-    status: BuyStatus;
+    status: SellStatus;
 
     /**
      * Associated payment method (e.g. a bank, fiat account)
      */
-    payment_method: ResourceRef;
+    payment_method?: ResourceRef;
 
     /**
      * Associated transaction (e.g. a bank, fiat account)
@@ -1136,6 +1193,26 @@ export interface PaymentMethod extends Resource {
     resource: "payment_method";
 
     /**
+     * Resource ID
+     */
+    id: string;
+
+    /**
+     * ISO timestamp (sometimes needs additional permissions)
+     */
+    created_at?: string;
+
+    /**
+     * ISO timestamp (sometimes needs additional permissions)
+     */
+    updated_at?: string;
+
+    /**
+     * REST endpoint
+     */
+    resource_path: string;
+
+    /**
      * Payment method type
      */
     type: PaymentMethodType;
@@ -1171,6 +1248,16 @@ export interface PaymentMethod extends Resource {
     allow_sell: boolean;
 
     /**
+     * Is depositing allowed
+     */
+    allow_deposit: boolean;
+
+    /**
+     * Is withdrawing allowed
+     */
+    allow_withdraw: boolean;
+
+    /**
      * Does this method allow for instant buys?
      */
     instant_buy: boolean;
@@ -1179,6 +1266,16 @@ export interface PaymentMethod extends Resource {
      * Does this method allow for instant sells?
      */
     instant_sell: boolean;
+
+    /**
+     * Whether the account is verified
+     */
+    verified: boolean;
+
+    /**
+     * Optional reference to corresponding account
+     */
+    fiat_account?: ResourceRef;
 
     /**
      * If the user has obtained optional wallet:payment-methods:limits permission, an additional field, limits, will be embedded into payment
@@ -1280,7 +1377,7 @@ export class Client {
      * Lists current user’s payment methods
      * Scope: wallet:payment-methods:read
      */
-    getPaymentMethods(cb: (error: Error, result: PaymentMethod[]) => void): void;
+    getPaymentMethods(opts: {}, cb: (error: Error, result: PaymentMethod[]) => void): void;
 
     /**
      * Show current user’s payment method.
@@ -1308,7 +1405,7 @@ export class Client {
      * If you need more accurate price estimate for a specific payment method or amount, @see Account#buy() and `quote: true` option.
      * Scope: none
      */
-    getBuyPrice(opts: GetBuyPriceOpts, cb: (error: Error, result: MoneyHash) => void): void;
+    getBuyPrice(opts: GetBuyPriceOpts, cb: (error: Error, result: PriceResult) => void): void;
 
     /**
      * Get the total price to sell one bitcoin or ether. Note that exchange rates fluctuates so the price is only correct for seconds at the time.
@@ -1316,7 +1413,7 @@ export class Client {
      * estimate for a specific payment method or amount, see sell bitcoin endpoint and quote: true option.
      * Scope: none
      */
-    getSellPrice(opts: GetSellPriceOpts, cb: (error: Error, result: MoneyHash) => void): void;
+    getSellPrice(opts: GetSellPriceOpts, cb: (error: Error, result: PriceResult) => void): void;
 
     /**
      * Get the current market price for bitcoin. This is usually somewhere in between the buy and sell price.
@@ -1324,7 +1421,7 @@ export class Client {
      * You can also get historic prices with date parameter.
      * Scope: none
      */
-    getSpotPrice(opts: GetSpotPriceOpts, cb: (error: Error, result: MoneyHash) => void): void;
+    getSpotPrice(opts: GetSpotPriceOpts, cb: (error: Error, result: PriceResult) => void): void;
 
     /**
      * Get the API server time.
