@@ -8,12 +8,15 @@ easily automating trading tasks or inspecting the prices.
 
 ## Features
 
-I'm still working on this project. At this time, selling coins is supported. Think of the current version as your emergency "sell 'em all!" tool.
+I'm still working on this project. At this time, bying and selling coins is supported.
 
 * Interactive mode: commands will nicely ask you to input them during command execution
 * Non-interactive mode: specify all arguments on the command-line
-* `sellprice` command: shows the sell price for a given trade pair
-* `sell` command: sells your coins for cash
+* Commands:
+	* `buy` command: trade fiat currency for crypto currency
+	* `buyprice` command: shows the buy price for a given trade pair
+	* `sell` command: sell crypto currency for fiat currency
+	* `sellprice` command: shows the sell price for a given trade pair
 
 ## Installation & Preparation
 
