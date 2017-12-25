@@ -5,7 +5,8 @@ import * as yargs from "yargs";
 
 import { cmdGet, cmdSet, cmdUnset } from "./cli-configuration";
 import { cmdSell, cmdSellPrice } from "./cli-sell";
-import { Client, ClientImpl } from "./coinbase-impl";
+import { Client } from "./coinbase";
+import { ClientImpl } from "./coinbase-impl";
 import { ClientMock } from "./coinbase-mock";
 import { Configuration, ConfigurationMgrImpl } from "./configuration-impl";
 import { ConsoleOutput, ConsoleOutputImpl } from "./console-output-impl";

@@ -888,7 +888,7 @@ export class Buy implements Resource {
     /**
      * Associated payment method (e.g. a bank, fiat account)
      */
-    payment_method: ResourceRef;
+    payment_method?: ResourceRef;
 
     /**
      * Associated transaction (e.g. a bank, fiat account)
@@ -1097,7 +1097,7 @@ export type WithdrawalStatus = "created" | "completed" | "canceled";
  * never complete and receive an associated transaction unless they are committed separately.
  */
 export class Withdrawal implements Resource {
-    resource: "deposit";
+    resource: "withdrawal";
 
     /**
      * Resource ID

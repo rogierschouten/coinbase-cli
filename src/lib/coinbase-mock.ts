@@ -5,13 +5,217 @@
  */
 
 import {
-	Account, AccountCurrency, AccountType, Address, Client, GetSellPriceOpts, MoneyHash, PaymentMethod, PriceResult, ResourceRef, Sell,
-	SellOpts, SellStatus, Transaction, TransactionStatus, TransactionType
+	Account, AccountCurrency, AccountType, Address, Auth, Buy, BuyOpts, BuyStatus, Client, Country, CreateAccountOpts, CreateAddressOpts,
+	Currency, Deposit, DepositOpts, DepositStatus, ExchangeRate, GetBuyPriceOpts, GetExchangeRateOpts, GetSellPriceOpts,
+	GetSpotPriceOpts, MoneyHash, PaymentMethod, PriceResult, RequestMoneyOpts, ResourceRef, Sell, SellOpts, SellStatus, SendMoneyOpts,
+	Time, Transaction, TransactionStatus, TransactionType, TransferMoneyOpts, UpdateAccountOpts, UpdateUserOpts, User, Withdrawal,
+	WithdrawOpts
 } from "./coinbase";
 
-/**
- * Promisified coinbase transaction implementation
- */
+export {
+	AccountCurrency, AccountType, Auth, BuyOpts, BuyStatus, Country, CreateAccountOpts, CreateAddressOpts, Currency, CurrencyType,
+	DepositOpts, DepositStatus, ExchangeRate, GetBuyPriceOpts, GetExchangeRateOpts, GetSellPriceOpts, GetSpotPriceOpts, MoneyHash,
+	PaymentMethod, PaymentMethodLimit, PaymentMethodLimits, PaymentMethodType, PriceResult, RequestMoneyOpts, Resource, ResourceRef,
+	ResourceType, SellOpts, SellStatus, SendMoneyOpts, Time, TransactionStatus, TransactionType, TransferMoneyOpts, UpdateAccountOpts,
+	UpdateUserOpts, WithdrawalStatus, WithdrawOpts
+} from "./coinbase";
+
+export class UserMock implements User {
+	public resource: "user";
+	public id: string;
+	public created_at?: string;
+	public updated_at?: string;
+	public resource_path: string;
+	public name?: string;
+	public username?: string;
+	public profile_location?: string;
+	public profile_bio?: string;
+	public profile_url?: string;
+	public avatar_url: string;
+	public time_zone?: string;
+	public native_currency?: string;
+	public bitcoin_unit?: string;
+	public country?: Country;
+	public email?: string;
+
+	public async showAuth(): Promise<Auth> {
+		throw new Error("not implemented");
+	}
+
+	public async update(_opts: UpdateUserOpts): Promise<UserMock> {
+		throw new Error("not implemented");
+	}
+}
+
+export class AddressMock implements Address {
+	public resource: "address";
+	public address: string;
+	public name: string;
+
+	public async getTransactions(_opts: {}): Promise<TransactionMock[]> {
+		throw new Error("not implemented");
+	}
+}
+
+export class AccountMock implements Account {
+	public resource: "account" = "account";
+	public id: string;
+	public created_at: string | undefined;
+	public updated_at: string | undefined;
+	public resource_path: string;
+	public name: string;
+	public primary: boolean;
+	public type: AccountType;
+	public currency: AccountCurrency;
+	public balance: MoneyHash;
+
+	constructor(opts: {
+		id: string;
+		created_at: string | undefined;
+		updated_at: string | undefined;
+		resource_path: string;
+		name: string;
+		primary: boolean;
+		type: AccountType;
+		currency: AccountCurrency;
+		balance: MoneyHash
+	}) {
+		this.id = opts.id;
+		this.created_at = opts.created_at;
+		this.updated_at = opts.updated_at;
+		this.resource_path = opts.resource_path;
+		this.name = opts.name;
+		this.primary = opts.primary;
+		this.type = opts.type;
+		this.currency = opts.currency;
+		this.balance = opts.balance;
+	}
+
+	public async setPrimary(): Promise<AccountMock> {
+		throw new Error("not implemented");
+	}
+
+	public async update(_opts: UpdateAccountOpts): Promise<AccountMock> {
+		throw new Error("not implemented");
+	}
+
+	public async delete(): Promise<void> {
+		throw new Error("not implemented");
+	}
+
+	public async getAddresses(): Promise<AddressMock[]> {
+		throw new Error("not implemented");
+	}
+
+	public async getAddress(_id: string): Promise<AddressMock> {
+		throw new Error("not implemented");
+	}
+
+	public async createAddress(_opts: CreateAddressOpts | null): Promise<AddressMock> {
+		throw new Error("not implemented");
+	}
+
+	public async getTransactions(): Promise<TransactionMock[]> {
+		throw new Error("not implemented");
+	}
+
+	public async getTransaction(_id: string): Promise<TransactionMock> {
+		throw new Error("not implemented");
+	}
+
+	public async sendMoney(_opts: SendMoneyOpts): Promise<TransactionMock> {
+		throw new Error("not implemented");
+	}
+
+	public async transferMoney(_opts: TransferMoneyOpts): Promise<Transaction> {
+		throw new Error("not implemented");
+	}
+
+	public async requestMoney(_opts: RequestMoneyOpts): Promise<Transaction> {
+		throw new Error("not implemented");
+	}
+
+	public async getBuys(): Promise<BuyMock[]> {
+		throw new Error("not implemented");
+	}
+
+	public async getBuy(_id: string): Promise<BuyMock> {
+		throw new Error("not implemented");
+	}
+
+	public async buy(_opts: BuyOpts): Promise<BuyMock> {
+		throw new Error("not implemented");
+	}
+
+	public async getSells(): Promise<SellMock[]> {
+		throw new Error("not implemented");
+	}
+
+	public async getSell(_id: string): Promise<SellMock> {
+		throw new Error("not implemented");
+	}
+
+	public async sell(opts: SellOpts): Promise<SellMock> {
+		let amt: string;
+		let total: string;
+		let fee: string;
+		let subtotal: string;
+		if (opts.amount) {
+			amt = opts.amount;
+			total = (parseFloat(opts.amount) * 1.1).toString(10);
+			subtotal = opts.amount;
+			fee = (parseFloat(opts.amount) * 0.1).toString(10);
+		} else if (opts.total) {
+			amt = (parseFloat(opts.total) * 0.9).toString(10);
+			total = opts.total;
+			subtotal = amt;
+			fee = (parseFloat(opts.total) * 0.1).toString(10);
+		} else {
+			throw new Error("amount nor total given");
+		}
+		const result = new SellMock({
+			amount: { amount: amt, currency: opts.currency },
+			committed: false,
+			fee: { amount: fee, currency: opts.currency },
+			instant: false,
+			payment_method: opts.payment_method ?
+				{ id: opts.payment_method!, resource: "payment_method", resource_path: `/payment_method/${opts.payment_method}` } :
+				undefined,
+			payout_at: "2017-12-15T23:50:24",
+			status: opts.quote ? "completed" : "created",
+			subtotal: { amount: subtotal, currency: opts.currency },
+			total: { amount: total, currency: opts.currency },
+			transaction: { id: "8975487954q389753q4897354", resource: "transaction", resource_path: "/transactions/8975487954q389753q4897354" }
+		});
+		return result;
+	}
+
+	public async getDeposits(): Promise<DepositMock[]> {
+		throw new Error("not implemented");
+	}
+
+	public async getDeposit(_id: string): Promise<DepositMock> {
+		throw new Error("not implemented");
+	}
+
+	public async deposit(_opts: DepositOpts): Promise<DepositMock> {
+		throw new Error("not implemented");
+	}
+
+	public async getWithdrawals(): Promise<WithdrawalMock[]> {
+		throw new Error("not implemented");
+	}
+
+	public async getWithdrawal(_id: string): Promise<WithdrawalMock> {
+		throw new Error("not implemented");
+	}
+
+	public async withdraw(_opts: WithdrawOpts): Promise<WithdrawalMock> {
+		throw new Error("not implemented");
+	}
+
+}
+
 export class TransactionMock implements Transaction {
 	public resource: "transaction" = "transaction";
 	public type: TransactionType;
@@ -32,28 +236,79 @@ export class TransactionMock implements Transaction {
 		this.account = account;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public complete(): Promise<TransactionMock> {
 		this.status = "completed";
 		return Promise.resolve(this);
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public resend(): Promise<Transaction> {
+	public resend(): Promise<TransactionMock> {
 		this.status = "completed";
 		return Promise.resolve(this);
+	}
+
+	public cancel(): Promise<TransactionMock> {
+		this.status = "canceled";
+		return Promise.resolve(this);
+	}
+}
+
+export class BuyMock implements Buy {
+	public resource: "buy" = "buy";
+	public status: BuyStatus;
+	public payment_method?: ResourceRef;
+	public transaction: ResourceRef;
+	public amount: MoneyHash;
+	public total: MoneyHash;
+	public subtotal: MoneyHash;
+	public fee: MoneyHash;
+	public committed: boolean;
+	public instant: boolean;
+	public payout_at: string | undefined;
+
+	constructor(opts: {
+		status: BuyStatus,
+		payment_method?: ResourceRef,
+		transaction: ResourceRef,
+		amount: MoneyHash,
+		total: MoneyHash,
+		subtotal: MoneyHash,
+		fee: MoneyHash,
+		committed: boolean,
+		instant: boolean,
+		payout_at: string | undefined
+	}) {
+		this.status = opts.status;
+		this.payment_method = opts.payment_method;
+		this.transaction = opts.transaction;
+		this.amount = opts.amount;
+		this.total = opts.total;
+		this.subtotal = opts.subtotal;
+		this.fee = opts.fee;
+		this.committed = opts.committed;
+		this.instant = opts.instant;
+		this.payout_at = opts.payout_at;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public cancel(): Promise<Transaction> {
-		this.status = "canceled";
-		return Promise.resolve(this);
+	public async commit(): Promise<BuyMock> {
+		if (this.status !== "created") {
+			throw new Error(`you cannot commit a ${this.status} order`);
+		}
+		const result = new BuyMock({
+			amount: this.amount,
+			committed: true,
+			fee: this.fee,
+			instant: false,
+			payment_method: this.payment_method,
+			payout_at: this.payout_at,
+			status: "completed",
+			subtotal: this.subtotal,
+			total: this.total,
+			transaction: this.transaction
+		});
+		return result;
 	}
 }
 
@@ -117,73 +372,43 @@ export class SellMock implements Sell {
 	}
 }
 
-export class AccountMock implements Account {
-	public resource: "account" = "account";
+export class DepositMock implements Deposit {
+	public resource: "deposit";
 	public id: string;
-	public created_at: string | undefined;
-	public updated_at: string | undefined;
+	public created_at?: string;
+	public updated_at?: string;
 	public resource_path: string;
-	public name: string;
-	public primary: boolean;
-	public type: AccountType;
-	public currency: AccountCurrency;
-	public balance: MoneyHash;
+	public status: DepositStatus;
+	public payment_method: ResourceRef;
+	public transaction: ResourceRef;
+	public amount: MoneyHash;
+	public subtotal: MoneyHash;
+	public fee: MoneyHash;
+	public committed: boolean;
+	public payout_at?: string;
 
-	constructor(opts: {
-		id: string;
-		created_at: string | undefined;
-		updated_at: string | undefined;
-		resource_path: string;
-		name: string;
-		primary: boolean;
-		type: AccountType;
-		currency: AccountCurrency;
-		balance: MoneyHash
-	}) {
-		this.id = opts.id;
-		this.created_at = opts.created_at;
-		this.updated_at = opts.updated_at;
-		this.resource_path = opts.resource_path;
-		this.name = opts.name;
-		this.primary = opts.primary;
-		this.type = opts.type;
-		this.currency = opts.currency;
-		this.balance = opts.balance;
+	public async commit(): Promise<DepositMock> {
+		throw new Error("not implemented");
 	}
+}
 
-	public async sell(opts: SellOpts): Promise<SellMock> {
-		let amt: string;
-		let total: string;
-		let fee: string;
-		let subtotal: string;
-		if (opts.amount) {
-			amt = opts.amount;
-			total = (parseFloat(opts.amount) * 1.1).toString(10);
-			subtotal = opts.amount;
-			fee = (parseFloat(opts.amount) * 0.1).toString(10);
-		} else if (opts.total) {
-			amt = (parseFloat(opts.total) * 0.9).toString(10);
-			total = opts.total;
-			subtotal = amt;
-			fee = (parseFloat(opts.total) * 0.1).toString(10);
-		} else {
-			throw new Error("amount nor total given");
-		}
-		const result = new SellMock({
-			amount: { amount: amt, currency: opts.currency },
-			committed: false,
-			fee: { amount: fee, currency: opts.currency },
-			instant: false,
-			payment_method: opts.payment_method ?
-				{ id: opts.payment_method!, resource: "payment_method", resource_path: `/payment_method/${opts.payment_method}` } :
-				undefined,
-			payout_at: "2017-12-15T23:50:24",
-			status: opts.quote ? "completed" : "created",
-			subtotal: { amount: subtotal, currency: opts.currency },
-			total: { amount: total, currency: opts.currency },
-			transaction: { id: "8975487954q389753q4897354", resource: "transaction", resource_path: "/transactions/8975487954q389753q4897354" }
-		});
-		return result;
+export class WithdrawalMock implements Withdrawal {
+	public resource: "withdrawal";
+	public id: string;
+	public created_at?: string;
+	public updated_at?: string;
+	public resource_path: string;
+	public status: DepositStatus;
+	public payment_method: ResourceRef;
+	public transaction: ResourceRef;
+	public amount: MoneyHash;
+	public subtotal: MoneyHash;
+	public fee: MoneyHash;
+	public committed: boolean;
+	public payout_at?: string;
+
+	public async commit(): Promise<WithdrawalMock> {
+		throw new Error("not implemented");
 	}
 }
 
@@ -199,16 +424,18 @@ export class ClientMock implements Client {
 	 */
 	public _paymentMethods: PaymentMethod[] = examplePaymentMethods();
 
-	/**
-	 * @inheritDoc
-	 */
-	public async getAccounts(): Promise<Account[]> {
-		return this._accounts;
+	public async getUser(_id: string): Promise<UserMock> {
+		throw new Error("not implemented");
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	public async getCurrentUser(): Promise<UserMock> {
+		throw new Error("not implemented");
+	}
+
+	public async getAccounts(): Promise<Account[]> {
+		throw new Error("not implemented");
+	}
+
 	public async getAccount(id: string): Promise<Account> {
 		for (const account of this._accounts) {
 			if (account.id === id) {
@@ -218,16 +445,14 @@ export class ClientMock implements Client {
 		throw new Error("Not found"); // this is the error Coinbase API sends back
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	public async createAccount(_opts: CreateAccountOpts): Promise<AccountMock> {
+		throw new Error("not implemented");
+	}
+
 	public async getPaymentMethods(): Promise<PaymentMethod[]> {
 		return this._paymentMethods;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	public async getPaymentMethod(id: string): Promise<PaymentMethod> {
 		for (const paymentMethod of this._paymentMethods) {
 			if (paymentMethod.id === id) {
@@ -237,15 +462,36 @@ export class ClientMock implements Client {
 		throw new Error("Not found"); // this is the error Coinbase API sends back
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	public async getCurrencies(): Promise<Currency[]> {
+		throw new Error("not implemented");
+	}
+
+	public async getExchangeRates(_opts: GetExchangeRateOpts): Promise<ExchangeRate> {
+		throw new Error("not implemented");
+	}
+
 	public async getSellPrice(opts: GetSellPriceOpts): Promise<PriceResult> {
 		if (opts.currencyPair.indexOf("-") === -1) {
 			throw new Error("invalid currency pair");
 		}
 		return { data: { base: opts.currencyPair.split("-")[0], amount: "15234.23", currency: opts.currencyPair.split("-")[1] } };
 	}
+
+	public async getBuyPrice(opts: GetBuyPriceOpts): Promise<PriceResult> {
+		if (opts.currencyPair.indexOf("-") === -1) {
+			throw new Error("invalid currency pair");
+		}
+		return { data: { base: opts.currencyPair.split("-")[0], amount: "15235.23", currency: opts.currencyPair.split("-")[1] } };
+	}
+
+	public async getSpotPrice(_opts: GetSpotPriceOpts): Promise<PriceResult> {
+		throw new Error("not implemented");
+	}
+
+	public async getTime(): Promise<Time> {
+		throw new Error("not implemented");
+	}
+
 }
 
 // tslint:disable:object-literal-sort-keys
