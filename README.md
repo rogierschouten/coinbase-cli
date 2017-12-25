@@ -94,9 +94,9 @@ License: MIT, see LICENSE file.
 
 ## Donations
 
-* Bitcoin: 1MnBwbB1ph5QiwyFs3fxANctATWueibokr
-* Bitcoin Cash: 16pfrziP6UhVGjzeMLUEx8iL4134jwYAzt
-* Dash: XdeeQDE6UE3AsZHwNdgcikMfmZ5stjWrGA
-* Ethereum: 0x34Ec788A9B81E1F07311B1ad950444DbE0630B55
-* Litecoin: LW5nBgagMZVo25J3dMwttmvgzJJ9tFypba
+* Bitcoin: 1FytkRspy78HGBJgsieCqgNapxsKSSG6bU
+* Bitcoin Cash: 1DQzYgh6r2R5PvJTckLGdBqqFhKjsmEpAb
+* Dash: XnrCJYkvipLUemUH7VmzpD6vvoQoVj4cVD
+* Ethereum: 0xe324D345857c8802d34c4577fB465E050Cf10771
+* Litecoin: La72oJGP4fZR4wUGaHL4WKN2NE5g8uuiUS
 

@@ -122,7 +122,8 @@ yargs
 		command: "$0",
 		describe: "default action",
 		builder: (args: yargs.Argv): yargs.Argv => args,
-		handler: () => output.log("This is a tool for trading on Coinbase on the command-line. Use 'coinbase help' to learn more.")
+		handler: () =>
+			output.log("This is a tool for trading on Coinbase on the command-line. Use 'coinbase help' or 'coinbase <command> help' to learn more.")
 	})
 	.help(true)
 	.argv;
