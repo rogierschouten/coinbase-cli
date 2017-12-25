@@ -64,5 +64,9 @@ export class ConfigurationMgrImpl implements ConfigurationMgr {
 			typeof config.variables.apiSecret === "string" || config.variables.apiSecret === undefined,
 			"'apiSecret' variable should be a string"
 		);
+		assert(
+			typeof config.variables.apiVersion === "string" || config.variables.apiVersion === undefined,
+			"'apiVersion' variable should be a string"
+		);
 	}
 }

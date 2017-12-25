@@ -41,6 +41,7 @@ async function ensureClient(
 ): Promise<Client> {
 	let apiKey = args.apiKey || config.variables.apiKey;
 	let apiSecret = args.apiSecret || config.variables.apiSecret;
+	const apiVersion = config.variables.apiVersion || "2017-07-21";
 	if (!apiKey) {
 		output.log("Please enter your API key:");
 		apiKey = await output.input({});
@@ -52,7 +53,7 @@ async function ensureClient(
 	if (args.mock) {
 		return new ClientMock();
 	} else {
-		return new ClientImpl({ apiKey, apiSecret, version: "2017-07-21" });
+		return new ClientImpl({ apiKey, apiSecret, version: apiVersion });
 	}
 }
 
@@ -62,18 +63,18 @@ yargs
 	.command({
 		command: "set <variable> <value>",
 		builder: (args: yargs.Argv): yargs.Argv => args,
-		describe: "store a variable e.g. 'api-key' or 'api-secret'",
+		describe: "store a variable e.g. 'api-key' or 'api-secret' or 'api-version'",
 		handler: (args: any): void => handleCommandResult(cmdSet(args, cfgMgr))
 	})
 	.command({
 		command: "unset <variable>",
-		describe: "remove a variable e.g. 'api-key' or 'api-secret'",
+		describe: "remove a variable e.g. 'api-key' or 'api-secret' or 'api-version'",
 		builder: (args: yargs.Argv): yargs.Argv => args,
 		handler: (args: any): void => handleCommandResult(cmdUnset(args, cfgMgr))
 	})
 	.command({
 		command: "get <variable>",
-		describe: "retrieve the value of a variable e.g. 'api-key' or 'api-secret'",
+		describe: "retrieve the value of a variable e.g. 'api-key' or 'api-secret' or 'api-version'",
 		builder: (args: yargs.Argv): yargs.Argv => args,
 		handler: (args: any): void => handleCommandResult(cmdGet(args, output, cfgMgr))
 	})

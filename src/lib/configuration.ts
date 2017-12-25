@@ -9,6 +9,7 @@ export interface Configuration {
 	variables: {
 		apiKey?: string;
 		apiSecret?: string;
+		apiVersion?: string;
 	};
 }
 
