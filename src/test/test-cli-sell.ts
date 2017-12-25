@@ -6,7 +6,7 @@ import "./common-init";
 
 import { expect } from "chai";
 
-import { cmdSellPrice } from "../lib/cli-sell";
+import { cmdSellPrice } from "../lib/cli-get-info";
 import { ClientMock } from "../lib/coinbase-mock";
 
 import { ConsoleOutputMock } from "./console-output-mock";

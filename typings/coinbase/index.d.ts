@@ -881,6 +881,26 @@ export class Buy implements Resource {
     resource: "buy";
 
     /**
+     * Resource ID
+     */
+    id: string;
+
+    /**
+     * ISO timestamp (sometimes needs additional permissions)
+     */
+    created_at?: string;
+
+    /**
+     * ISO timestamp (sometimes needs additional permissions)
+     */
+    updated_at?: string;
+
+    /**
+     * REST endpoint
+     */
+    resource_path: string;
+
+    /**
      * Status
      */
     status: BuyStatus;
@@ -950,6 +970,26 @@ export class Sell implements Resource {
      * Constant "sell"
      */
     resource: "sell";
+
+    /**
+     * Resource ID
+     */
+    id: string;
+
+    /**
+     * ISO timestamp (sometimes needs additional permissions)
+     */
+    created_at?: string;
+
+    /**
+     * ISO timestamp (sometimes needs additional permissions)
+     */
+    updated_at?: string;
+
+    /**
+     * REST endpoint
+     */
+    resource_path: string;
 
     /**
      * Status of the sell. Currently available values: created, completed, canceled

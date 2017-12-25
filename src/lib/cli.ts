@@ -5,8 +5,10 @@ import * as sourceMapSupport from "source-map-support";
 sourceMapSupport.install();
 import * as yargs from "yargs";
 
+import { cmdBuy } from "./cli-buy";
 import { cmdGet, cmdSet, cmdUnset } from "./cli-configuration";
-import { cmdSell, cmdSellPrice } from "./cli-sell";
+import { cmdBuyPrice, cmdSellPrice } from "./cli-get-info";
+import { cmdSell } from "./cli-sell";
 import { Client } from "./coinbase";
 import { ClientImpl } from "./coinbase-impl";
 import { ClientMock } from "./coinbase-mock";
@@ -25,7 +27,7 @@ function handleCommandResult(p: Promise<void>): void {
 			process.exit(0);
 		})
 		.catch((error: Error): void => {
-			output.error(error.message);
+			output.error(error.message, error);
 			process.exit(1);
 		});
 }
@@ -82,6 +84,20 @@ yargs
 		handler: (args: any): void => handleCommandResult(cmdGet(args, output, cfgMgr))
 	})
 	.command({
+		command: "buyprice <currency1> <currency2>",
+		describe: "get the current buy price for buying currency1 for currency2 e.g. buyprice BTC EUR",
+		builder: (args: yargs.Argv): yargs.Argv => args
+			.boolean("mock")
+			.describe("mock", "use fake Coinbase API to try things out with"),
+		handler: (args: any): void => handleCommandResult(
+			(async (): Promise<void> => {
+				const config = await cfgMgr.load();
+				const client = await ensureClient(args, config, output);
+				await cmdBuyPrice(args, output, client);
+			})()
+		)
+	})
+	.command({
 		command: "sellprice <currency1> <currency2>",
 		describe: "get the current sell price for selling currency1 for currency2 e.g. sellprice BTC EUR",
 		builder: (args: yargs.Argv): yargs.Argv => args
@@ -106,7 +122,7 @@ yargs
 			.describe("account", "id of account to sell from")
 			.string("payment-method")
 			.alias("p", "payment-method")
-			.describe("payment-method", "id of payment-method to sell from")
+			.describe("payment-method", "id of payment method to that will receive the money")
 			.string("amount")
 			.alias("t", "amount")
 			.describe("amount", "amount of coins to sell, or 'all' for all coins")
@@ -119,6 +135,33 @@ yargs
 				const config = await cfgMgr.load();
 				const client = await ensureClient(args, config, output);
 				await cmdSell(args, output, client);
+			})()
+		)
+	})
+	.command({
+		command: "buy",
+		describe: "buy a cryptocurrency",
+		builder: (args: yargs.Argv): yargs.Argv => args
+			.boolean("mock")
+			.describe("mock", "use fake Coinbase API to try things out with")
+			.string("account")
+			.alias("a", "account")
+			.describe("account", "id of account to buy into")
+			.string("payment-method")
+			.alias("p", "payment-method")
+			.describe("payment-method", "id of payment method to buy with")
+			.string("amount")
+			.alias("t", "amount")
+			.describe("amount", "amount of coins to buy")
+			.boolean("quote")
+			.describe("quote", "only request a quote, not a real buy order")
+			.boolean("commit")
+			.describe("commit", "immediately commit the order"),
+		handler: (args: any): void => handleCommandResult(
+			(async (): Promise<void> => {
+				const config = await cfgMgr.load();
+				const client = await ensureClient(args, config, output);
+				await cmdBuy(args, output, client);
 			})()
 		)
 	})

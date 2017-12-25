@@ -7,12 +7,12 @@ import { ConsoleOutput } from "./console-output";
 import { AllowAll, chooseAccount, chooseAmount, choosePaymentMethod } from "./user-input";
 
 /**
- * Sell coins for cash
+ * Buy coins for cash
  * @param args
  * @param output
  * @param client
  */
-export async function cmdSell(
+export async function cmdBuy(
 	args: { account?: string, paymentMethod?: string, amount?: string, quote?: boolean, commit?: boolean },
 	output: ConsoleOutput,
 	client: Client
@@ -24,29 +24,26 @@ export async function cmdSell(
 		client,
 		output,
 		args.account,
-		(account: Account): boolean => account.type === "wallet" && parseFloat(account.balance.amount) > 0
+		(account: Account): boolean => account.type === "wallet"
 	);
-	const paymentMethod = await choosePaymentMethod(client, output, args.paymentMethod, (pm: PaymentMethod): boolean => pm.allow_sell);
+	const paymentMethod = await choosePaymentMethod(client, output, args.paymentMethod, (pm: PaymentMethod): boolean => pm.allow_buy);
 	let amount: string;
 	if (args.amount) {
 		amount = args.amount;
 	} else {
-		amount = await chooseAmount(output, account.currency.code, AllowAll.Yes);
+		amount = await chooseAmount(output, account.currency.code, AllowAll.No);
 	}
-	if (amount === "all") {
-		amount = account.balance.amount;
-	}
-	const order = await output.busyWhile(account.sell({
+	const order = await output.busyWhile(account.buy({
 		agree_btc_amount_varies: true,
 		amount,
 		commit: false,
 		currency: account.currency.code,
 		payment_method: paymentMethod.id,
 		quote: !!args.quote
-	}), "Sending sell order to Coinbase");
+	}), "Sending buy order to Coinbase");
 
 	output.log();
-	output.log("Sell Order:");
+	output.log("Buy Order:");
 	output.log("- amount   : %s %s", order.amount.amount, order.amount.currency);
 	output.log("- fee      : %s %s", order.fee.amount, order.fee.currency);
 	output.log("- subtotal : %s %s", order.subtotal.amount, order.subtotal.currency);
@@ -62,4 +59,3 @@ export async function cmdSell(
 		}
 	}
 }
-

@@ -69,7 +69,9 @@ export class AccountMock implements Account {
 	public currency: AccountCurrency;
 	public balance: MoneyHash;
 
-	constructor(opts: {
+	private _client: ClientMock;
+
+	constructor(client: ClientMock, opts: {
 		id: string;
 		created_at: string | undefined;
 		updated_at: string | undefined;
@@ -80,6 +82,7 @@ export class AccountMock implements Account {
 		currency: AccountCurrency;
 		balance: MoneyHash
 	}) {
+		this._client = client;
 		this.id = opts.id;
 		this.created_at = opts.created_at;
 		this.updated_at = opts.updated_at;
@@ -143,8 +146,47 @@ export class AccountMock implements Account {
 		throw new Error("not implemented");
 	}
 
-	public async buy(_opts: BuyOpts): Promise<BuyMock> {
-		throw new Error("not implemented");
+	public async buy(opts: BuyOpts): Promise<BuyMock> {
+		if (!opts.payment_method) {
+			throw new Error("payment method not given so I don't know the currency to mock");
+		}
+		const paymentMethod = await this._client.getPaymentMethod(opts.payment_method);
+		let amt: string;
+		let total: string;
+		let fee: string;
+		let subtotal: string;
+		if (opts.amount) {
+			amt = opts.amount;
+			total = "101.00";
+			subtotal = "100.00";
+			fee = "1.00";
+		} else if (opts.total) {
+			amt = "10";
+			total = opts.total;
+			subtotal = (parseFloat(opts.total) * 9 / 10).toString(10);
+			fee = (parseFloat(opts.total) * 1 / 10).toString(10);
+		} else {
+			throw new Error("amount nor total given");
+		}
+		const result = new BuyMock({
+			amount: { amount: amt, currency: opts.currency },
+			committed: false,
+			created_at: "2015-01-31T20:49:02Z",
+			fee: { amount: fee, currency: paymentMethod.currency },
+			id: "67e0eaec-07d7-54c4-a72c-2e92826897df",
+			instant: false,
+			payment_method: opts.payment_method ?
+				{ id: opts.payment_method!, resource: "payment_method", resource_path: `/payment_method/${opts.payment_method}` } :
+				undefined,
+			payout_at: "2017-12-15T23:50:24",
+			resource_path: "/v2/accounts/2bbf394c-193b-5b2a-9155-3b4732659ede/buys/67e0eaec-07d7-54c4-a72c-2e92826897df",
+			status: opts.quote ? "completed" : "created",
+			subtotal: { amount: subtotal, currency: paymentMethod.currency },
+			total: { amount: total, currency: paymentMethod.currency },
+			transaction: { id: "8975487954q389753q4897354", resource: "transaction", resource_path: "/transactions/8975487954q389753q4897354" },
+			updated_at: "2015-02-11T16:54:02-08:00"
+		});
+		return result;
 	}
 
 	public async getSells(): Promise<SellMock[]> {
@@ -156,36 +198,41 @@ export class AccountMock implements Account {
 	}
 
 	public async sell(opts: SellOpts): Promise<SellMock> {
+		if (!opts.payment_method) {
+			throw new Error("payment method not given so I don't know the currency to mock");
+		}
+		const paymentMethod = await this._client.getPaymentMethod(opts.payment_method);
 		let amt: string;
 		let total: string;
 		let fee: string;
 		let subtotal: string;
 		if (opts.amount) {
 			amt = opts.amount;
-			total = (parseFloat(opts.amount) * 1.1).toString(10);
-			subtotal = opts.amount;
-			fee = (parseFloat(opts.amount) * 0.1).toString(10);
+			total = "98.01";
+			subtotal = "99.00";
+			fee = "10.1";
 		} else if (opts.total) {
-			amt = (parseFloat(opts.total) * 0.9).toString(10);
-			total = opts.total;
-			subtotal = amt;
-			fee = (parseFloat(opts.total) * 0.1).toString(10);
+			throw new Error("selling by total is not implemented");
 		} else {
 			throw new Error("amount nor total given");
 		}
 		const result = new SellMock({
 			amount: { amount: amt, currency: opts.currency },
 			committed: false,
-			fee: { amount: fee, currency: opts.currency },
+			created_at: "2015-01-31T20:49:02Z",
+			fee: { amount: fee, currency: paymentMethod.currency },
+			id: "67e0eaec-07d7-54c4-a72c-2e92826897df",
 			instant: false,
 			payment_method: opts.payment_method ?
 				{ id: opts.payment_method!, resource: "payment_method", resource_path: `/payment_method/${opts.payment_method}` } :
 				undefined,
 			payout_at: "2017-12-15T23:50:24",
+			resource_path: "/v2/accounts/2bbf394c-193b-5b2a-9155-3b4732659ede/sells/67e0eaec-07d7-54c4-a72c-2e92826897df",
 			status: opts.quote ? "completed" : "created",
-			subtotal: { amount: subtotal, currency: opts.currency },
-			total: { amount: total, currency: opts.currency },
-			transaction: { id: "8975487954q389753q4897354", resource: "transaction", resource_path: "/transactions/8975487954q389753q4897354" }
+			subtotal: { amount: subtotal, currency: paymentMethod.currency },
+			total: { amount: total, currency: paymentMethod.currency },
+			transaction: { id: "8975487954q389753q4897354", resource: "transaction", resource_path: "/transactions/8975487954q389753q4897354" },
+			updated_at: "2015-02-11T16:54:02-08:00"
 		});
 		return result;
 	}
@@ -254,6 +301,10 @@ export class TransactionMock implements Transaction {
 
 export class BuyMock implements Buy {
 	public resource: "buy" = "buy";
+	public id: string;
+	public created_at?: string;
+	public updated_at?: string;
+	public resource_path: string;
 	public status: BuyStatus;
 	public payment_method?: ResourceRef;
 	public transaction: ResourceRef;
@@ -266,6 +317,10 @@ export class BuyMock implements Buy {
 	public payout_at: string | undefined;
 
 	constructor(opts: {
+		id: string,
+		created_at?: string,
+		updated_at?: string,
+		resource_path: string,
 		status: BuyStatus,
 		payment_method?: ResourceRef,
 		transaction: ResourceRef,
@@ -277,6 +332,10 @@ export class BuyMock implements Buy {
 		instant: boolean,
 		payout_at: string | undefined
 	}) {
+		this.id = opts.id;
+		this.created_at = opts.created_at;
+		this.updated_at = opts.updated_at;
+		this.resource_path = opts.resource_path;
 		this.status = opts.status;
 		this.payment_method = opts.payment_method;
 		this.transaction = opts.transaction;
@@ -299,14 +358,18 @@ export class BuyMock implements Buy {
 		const result = new BuyMock({
 			amount: this.amount,
 			committed: true,
+			created_at: this.created_at,
 			fee: this.fee,
+			id: this.id,
 			instant: false,
 			payment_method: this.payment_method,
 			payout_at: this.payout_at,
+			resource_path: this.resource_path,
 			status: "completed",
 			subtotal: this.subtotal,
 			total: this.total,
-			transaction: this.transaction
+			transaction: this.transaction,
+			updated_at: this.updated_at
 		});
 		return result;
 	}
@@ -314,6 +377,10 @@ export class BuyMock implements Buy {
 
 export class SellMock implements Sell {
 	public resource: "sell" = "sell";
+	public id: string;
+	public created_at?: string;
+	public updated_at?: string;
+	public resource_path: string;
 	public status: SellStatus;
 	public payment_method?: ResourceRef;
 	public transaction: ResourceRef;
@@ -326,6 +393,10 @@ export class SellMock implements Sell {
 	public payout_at: string | undefined;
 
 	constructor(opts: {
+		id: string,
+		created_at?: string,
+		updated_at?: string,
+		resource_path: string,
 		status: SellStatus,
 		payment_method?: ResourceRef,
 		transaction: ResourceRef,
@@ -337,6 +408,10 @@ export class SellMock implements Sell {
 		instant: boolean,
 		payout_at: string | undefined
 	}) {
+		this.id = opts.id;
+		this.created_at = opts.created_at;
+		this.updated_at = opts.updated_at;
+		this.resource_path = opts.resource_path;
 		this.status = opts.status;
 		this.payment_method = opts.payment_method;
 		this.transaction = opts.transaction;
@@ -359,14 +434,18 @@ export class SellMock implements Sell {
 		const result = new SellMock({
 			amount: this.amount,
 			committed: true,
+			created_at: this.created_at,
 			fee: this.fee,
+			id: this.id,
 			instant: false,
 			payment_method: this.payment_method,
 			payout_at: this.payout_at,
+			resource_path: this.resource_path,
 			status: "completed",
 			subtotal: this.subtotal,
 			total: this.total,
-			transaction: this.transaction
+			transaction: this.transaction,
+			updated_at: this.updated_at
 		});
 		return result;
 	}
@@ -417,7 +496,7 @@ export class ClientMock implements Client {
 	/**
 	 * test interface: set mock accounts
 	 */
-	public _accounts: AccountMock[] = exampleAccounts();
+	public _accounts: AccountMock[] = exampleAccounts(this);
 
 	/**
 	 * test interface: set payment methods
@@ -433,7 +512,7 @@ export class ClientMock implements Client {
 	}
 
 	public async getAccounts(): Promise<Account[]> {
-		throw new Error("not implemented");
+		return this._accounts.slice();
 	}
 
 	public async getAccount(id: string): Promise<Account> {
@@ -450,7 +529,7 @@ export class ClientMock implements Client {
 	}
 
 	public async getPaymentMethods(): Promise<PaymentMethod[]> {
-		return this._paymentMethods;
+		return this._paymentMethods.slice();
 	}
 
 	public async getPaymentMethod(id: string): Promise<PaymentMethod> {
@@ -474,18 +553,21 @@ export class ClientMock implements Client {
 		if (opts.currencyPair.indexOf("-") === -1) {
 			throw new Error("invalid currency pair");
 		}
-		return { data: { base: opts.currencyPair.split("-")[0], amount: "15234.23", currency: opts.currencyPair.split("-")[1] } };
+		return { data: { base: opts.currencyPair.split("-")[0], amount: "15234.00", currency: opts.currencyPair.split("-")[1] } };
 	}
 
 	public async getBuyPrice(opts: GetBuyPriceOpts): Promise<PriceResult> {
 		if (opts.currencyPair.indexOf("-") === -1) {
 			throw new Error("invalid currency pair");
 		}
-		return { data: { base: opts.currencyPair.split("-")[0], amount: "15235.23", currency: opts.currencyPair.split("-")[1] } };
+		return { data: { base: opts.currencyPair.split("-")[0], amount: "15235.00", currency: opts.currencyPair.split("-")[1] } };
 	}
 
-	public async getSpotPrice(_opts: GetSpotPriceOpts): Promise<PriceResult> {
-		throw new Error("not implemented");
+	public async getSpotPrice(opts: GetSpotPriceOpts): Promise<PriceResult> {
+		if (opts.currencyPair.indexOf("-") === -1) {
+			throw new Error("invalid currency pair");
+		}
+		return { data: { base: opts.currencyPair.split("-")[0], amount: "15234.50", currency: opts.currencyPair.split("-")[1] } };
 	}
 
 	public async getTime(): Promise<Time> {
@@ -498,9 +580,9 @@ export class ClientMock implements Client {
 /**
  * Returns a set of example mock accounts
  */
-export function exampleAccounts(): AccountMock[] {
+export function exampleAccounts(client: ClientMock): AccountMock[] {
 	return [
-		new AccountMock({
+		new AccountMock(client, {
 			id: "db7abb63-2e8b-534a-bdff-5d1dbf2234f2",
 			name: "EUR Wallet",
 			primary: false,
@@ -518,7 +600,7 @@ export function exampleAccounts(): AccountMock[] {
 			updated_at: "2017-12-12T23:15:27Z",
 			resource_path: "/v2/accounts/db7abb63-2e8b-534a-bdff-5d1dbf2234f2"
 		}),
-		new AccountMock({
+		new AccountMock(client, {
 			id: "a3b02e94-73f8-557a-a553-4e0ad5abbbb3a2",
 			name: "LTC Wallet",
 			primary: false,
@@ -537,7 +619,7 @@ export function exampleAccounts(): AccountMock[] {
 			updated_at: "2017-12-12T22:15:37Z",
 			resource_path: "/v2/accounts/a3b02e94-73f8-557a-a553-4e0ad5abbbb3a2"
 		}),
-		new AccountMock({
+		new AccountMock(client, {
 			id: "ea81d255-a43d-53f7-8379-08a2f96d0034",
 			name: "ETH Wallet",
 			primary: false,
@@ -556,7 +638,7 @@ export function exampleAccounts(): AccountMock[] {
 			updated_at: "2017-07-21T07:58:50Z",
 			resource_path: "/v2/accounts/ea81d255-a43d-53f7-8379-08a2f96d0034"
 		}),
-		new AccountMock({
+		new AccountMock(client, {
 			id: "33452906-0ab7-596a-98bd-cb3b62806ebe",
 			name: "BTC Wallet",
 			primary: true,

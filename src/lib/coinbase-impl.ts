@@ -458,6 +458,10 @@ export class TransactionImpl implements Transaction {
 
 export class BuyImpl implements Buy {
 	get resource(): "buy" { return this._native.resource; }
+	get id(): string { return this._native.id; }
+	get created_at(): string | undefined { return this._native.created_at; }
+	get updated_at(): string | undefined { return this._native.updated_at; }
+	get resource_path(): string { return this._native.resource_path; }
 	get status(): coinbase.BuyStatus { return this._native.status; }
 	get payment_method(): coinbase.ResourceRef | undefined { return this._native.payment_method; }
 	get transaction(): coinbase.ResourceRef { return this._native.transaction; }
@@ -493,6 +497,10 @@ export class BuyImpl implements Buy {
 
 export class SellImpl implements Sell {
 	get resource(): "sell" { return this._native.resource; }
+	get id(): string { return this._native.id; }
+	get created_at(): string | undefined { return this._native.created_at; }
+	get updated_at(): string | undefined { return this._native.updated_at; }
+	get resource_path(): string { return this._native.resource_path; }
 	get status(): coinbase.SellStatus { return this._native.status; }
 	get payment_method(): coinbase.ResourceRef | undefined { return this._native.payment_method; }
 	get transaction(): coinbase.ResourceRef { return this._native.transaction; }
