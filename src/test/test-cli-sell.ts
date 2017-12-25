@@ -2,6 +2,8 @@
  * Copyright (c) 2017 Rogier Schouten <https://github.com/rogierschouten>
  */
 
+import "./common-init";
+
 import { expect } from "chai";
 
 import { cmdSellPrice } from "../lib/cli-sell";

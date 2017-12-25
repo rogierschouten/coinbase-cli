@@ -1,6 +1,8 @@
 /**
  * Copyright (c) 2017 Rogier Schouten <https://github.com/rogierschouten>
  */
+import * as sourceMapSupport from "source-map-support";
+sourceMapSupport.install();
 import * as yargs from "yargs";
 
 import { cmdGet, cmdSet, cmdUnset } from "./cli-configuration";
