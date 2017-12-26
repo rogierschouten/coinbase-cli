@@ -664,7 +664,7 @@ function examplePaymentMethods(): PaymentMethod[] {
 	return [{
 		id: "b378cf67-a6bd-5f84-bcb4-5c29682d186d",
 		type: "sepa_bank_account",
-		name: "ABN AMRO (NL84 ABNA 0463 4913 35)",
+		name: "ABN AMRO (NL84 ABNA 0933 5493 22)",
 		currency: "EUR",
 		primary_buy: false,
 		primary_sell: false,

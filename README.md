@@ -12,11 +12,14 @@ I'm still working on this project. At this time, bying and selling coins is supp
 
 * Interactive mode: commands will nicely ask you to input them during command execution
 * Non-interactive mode: specify all arguments on the command-line
-* Commands:
-	* `buy` command: trade fiat currency for crypto currency
-	* `buyprice` command: shows the buy price for a given trade pair
-	* `sell` command: sell crypto currency for fiat currency
-	* `sellprice` command: shows the sell price for a given trade pair
+* Commands (run `coinbase help <command>` for details):
+	* `accounts`: list your coinbase accounts
+	* `paymentmethods`: list your coinbase payment methods
+	* `buyprice`: shows the buy price for a given trade pair
+	* `sellprice`: shows the sell price for a given trade pair
+	* `spotprice`: shows the spot price for a given trade pair
+	* `buy`: buy crypto currency with fiat currency
+	* `sell`: sell crypto currency for fiat currency
 
 ## Installation & Preparation
 

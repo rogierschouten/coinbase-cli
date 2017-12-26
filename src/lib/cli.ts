@@ -7,7 +7,7 @@ import * as yargs from "yargs";
 
 import { cmdBuy } from "./cli-buy";
 import { cmdGet, cmdSet, cmdUnset } from "./cli-configuration";
-import { cmdBuyPrice, cmdSellPrice } from "./cli-get-info";
+import { cmdAccounts, cmdBuyPrice, cmdPaymentMethods, cmdSellPrice, cmdSpotPrice } from "./cli-get-info";
 import { cmdSell } from "./cli-sell";
 import { Client } from "./coinbase";
 import { ClientImpl } from "./coinbase-impl";
@@ -84,6 +84,34 @@ yargs
 		handler: (args: any): void => handleCommandResult(cmdGet(args, output, cfgMgr))
 	})
 	.command({
+		command: "accounts",
+		describe: "list your coinbase accounts",
+		builder: (args: yargs.Argv): yargs.Argv => args
+			.boolean("mock")
+			.describe("mock", "use fake Coinbase API to try things out with"),
+		handler: (args: any): void => handleCommandResult(
+			(async (): Promise<void> => {
+				const config = await cfgMgr.load();
+				const client = await ensureClient(args, config, output);
+				await cmdAccounts(output, client);
+			})()
+		)
+	})
+	.command({
+		command: "paymentmethods",
+		describe: "list your coinbase payment methods",
+		builder: (args: yargs.Argv): yargs.Argv => args
+			.boolean("mock")
+			.describe("mock", "use fake Coinbase API to try things out with"),
+		handler: (args: any): void => handleCommandResult(
+			(async (): Promise<void> => {
+				const config = await cfgMgr.load();
+				const client = await ensureClient(args, config, output);
+				await cmdPaymentMethods(output, client);
+			})()
+		)
+	})
+	.command({
 		command: "buyprice <currency1> <currency2>",
 		describe: "get the current buy price for buying currency1 for currency2 e.g. buyprice BTC EUR",
 		builder: (args: yargs.Argv): yargs.Argv => args
@@ -108,6 +136,20 @@ yargs
 				const config = await cfgMgr.load();
 				const client = await ensureClient(args, config, output);
 				await cmdSellPrice(args, output, client);
+			})()
+		)
+	})
+	.command({
+		command: "spotprice <currency1> <currency2>",
+		describe: "get the current spot price for spoting currency1 for currency2 e.g. spotprice BTC EUR",
+		builder: (args: yargs.Argv): yargs.Argv => args
+			.boolean("mock")
+			.describe("mock", "use fake Coinbase API to try things out with"),
+		handler: (args: any): void => handleCommandResult(
+			(async (): Promise<void> => {
+				const config = await cfgMgr.load();
+				const client = await ensureClient(args, config, output);
+				await cmdSpotPrice(args, output, client);
 			})()
 		)
 	})
