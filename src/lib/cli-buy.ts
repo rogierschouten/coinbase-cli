@@ -17,7 +17,7 @@ export async function cmdBuy(
 	output: ConsoleOutput,
 	client: Client
 ): Promise<void> {
-	if (args.amount !== undefined && args.amount !== "all" && !(parseFloat(args.amount) > 0)) {
+	if (args.amount !== undefined && !(parseFloat(args.amount) > 0)) {
 		throw new Error("amount must be a number greater than 0, e.g. '40.5'");
 	}
 	const account = await chooseAccount(

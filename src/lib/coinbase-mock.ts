@@ -257,8 +257,40 @@ export class AccountMock implements Account {
 		throw new Error("not implemented");
 	}
 
-	public async withdraw(_opts: WithdrawOpts): Promise<WithdrawalMock> {
-		throw new Error("not implemented");
+	public async withdraw(opts: WithdrawOpts): Promise<WithdrawalMock> {
+		const paymentMethod = await this._client.getPaymentMethod(opts.payment_method);
+		const result = new WithdrawalMock({
+			amount: {
+				amount: opts.amount,
+				currency: opts.currency
+			},
+			committed: false,
+			created_at: "2015-01-31T20:49:02Z",
+			fee: {
+				amount: "0.00",
+				currency: "USD"
+			},
+			id: "67e0eaec-07d7-54c4-a72c-2e92826897df",
+			payment_method: {
+				id: paymentMethod.id,
+				resource: paymentMethod.resource,
+				resource_path: paymentMethod.resource_path
+			},
+			payout_at: "2015-02-18T16:54:00-08:00",
+			resource_path: "/v2/accounts/2bbf394c-193b-5b2a-9155-3b4732659ede/withdrawals/67e0eaec-07d7-54c4-a72c-2e92826897df",
+			status: "created",
+			subtotal: {
+				amount: opts.amount,
+				currency: opts.currency
+			},
+			transaction: {
+				id: "441b9494-b3f0-5b98-b9b0-4d82c21c252a",
+				resource: "transaction",
+				resource_path: "/v2/accounts/2bbf394c-193b-5b2a-9155-3b4732659ede/transactions/441b9494-b3f0-5b98-b9b0-4d82c21c252a"
+			},
+			updated_at: "2015-02-11T16:54:02-08:00"
+		});
+		return result;
 	}
 
 }
@@ -472,7 +504,7 @@ export class DepositMock implements Deposit {
 }
 
 export class WithdrawalMock implements Withdrawal {
-	public resource: "withdrawal";
+	public resource: "withdrawal" = "withdrawal";
 	public id: string;
 	public created_at?: string;
 	public updated_at?: string;
@@ -486,8 +518,53 @@ export class WithdrawalMock implements Withdrawal {
 	public committed: boolean;
 	public payout_at?: string;
 
+	constructor(opts: {
+		id: string,
+		created_at?: string,
+		updated_at?: string,
+		resource_path: string,
+		status: DepositStatus,
+		payment_method: ResourceRef,
+		transaction: ResourceRef,
+		amount: MoneyHash,
+		subtotal: MoneyHash,
+		fee: MoneyHash,
+		committed: boolean,
+		payout_at?: string
+	}) {
+		this.id = opts.id;
+		this.created_at = opts.created_at;
+		this.updated_at = opts.updated_at;
+		this.resource_path = opts.resource_path;
+		this.status = opts.status;
+		this.payment_method = opts.payment_method;
+		this.transaction = opts.transaction;
+		this.amount = opts.amount;
+		this.subtotal = opts.subtotal;
+		this.fee = opts.fee;
+		this.committed = opts.committed;
+		this.payout_at = opts.payout_at;
+	}
+
 	public async commit(): Promise<WithdrawalMock> {
-		throw new Error("not implemented");
+		if (this.status !== "created") {
+			throw new Error(`you cannot commit a ${this.status} order`);
+		}
+		const result = new WithdrawalMock({
+			amount: this.amount,
+			committed: true,
+			created_at: this.created_at,
+			fee: this.fee,
+			id: this.id,
+			payment_method: this.payment_method,
+			payout_at: this.payout_at,
+			resource_path: this.resource_path,
+			status: "completed",
+			subtotal: this.subtotal,
+			transaction: this.transaction,
+			updated_at: this.updated_at
+		});
+		return result;
 	}
 }
 

@@ -8,8 +8,6 @@ easily automating trading tasks or inspecting the prices.
 
 ## Features
 
-I'm still working on this project. At this time, bying and selling coins is supported.
-
 * Interactive mode: commands will nicely ask you to input them during command execution
 * Non-interactive mode: specify all arguments on the command-line
 * Commands (run `coinbase help <command>` for details):
@@ -20,6 +18,11 @@ I'm still working on this project. At this time, bying and selling coins is supp
 	* `spotprice`: shows the spot price for a given trade pair
 	* `buy`: buy crypto currency with fiat currency
 	* `sell`: sell crypto currency for fiat currency
+	* `withdraw`: withdraw fiat currency
+
+## Disclaimer
+
+Use this tool at your own risk. Program code can contain bugs - it's open source, so you can check it before you use it.
 
 ## Installation & Preparation
 
@@ -89,10 +92,6 @@ The other option is to pass all necessary information on the command-line:
 ```shell
 coinbase sell --account="a3b02e94-73f8-557a-a553-5329056236542" --payment-method="453ebbdf-9d09-578f-8fec-ecfd7e7fed17" --amount="all"
 ```
-
-## Disclaimer
-
-Use this tool at your own risk. The code may contain bugs - it's open source so you can check it before you use it.
 
 ## License
 

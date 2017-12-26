@@ -293,7 +293,7 @@ export interface WithdrawOpts {
     /**
      * The ID of the payment method that should be used for the buy.
      */
-    payment_method?: string;
+    payment_method: string;
     /**
      * If set to false, this withdrawal will not be immediately completed. Use the commit call to complete it. Default value: true
      */
