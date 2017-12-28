@@ -7,7 +7,7 @@ import * as yargs from "yargs";
 
 import { cmdBuy } from "./cli-buy";
 import { cmdGet, cmdSet, cmdUnset } from "./cli-configuration";
-import { cmdAccounts, cmdBuyPrice, cmdPaymentMethods, cmdSellPrice, cmdSpotPrice } from "./cli-get-info";
+import { cmdAccounts, cmdBuyPrice, cmdPaymentMethods, cmdSellPrice, cmdSpotPrice, cmdTime } from "./cli-get-info";
 import { cmdSell } from "./cli-sell";
 import { cmdWithdraw } from "./cli-withdraw";
 import { Client } from "./coinbase";
@@ -28,7 +28,7 @@ function handleCommandResult(p: Promise<void>): void {
 			process.exit(0);
 		})
 		.catch((error: Error): void => {
-			output.error(error.message);
+			output.error(error.message, error);
 			process.exit(1);
 		});
 }
@@ -151,6 +151,18 @@ yargs
 				const config = await cfgMgr.load();
 				const client = await ensureClient(args, config, output);
 				await cmdSpotPrice(args, output, client);
+			})()
+		)
+	})
+	.command({
+		command: "time",
+		describe: "get the current time as Coinbase knows it. Your system clock must be within 30 seconds of this time",
+		builder: (args: yargs.Argv): yargs.Argv => args,
+		handler: (args: any): void => handleCommandResult(
+			(async (): Promise<void> => {
+				const config = await cfgMgr.load();
+				const client = await ensureClient(args, config, output);
+				await cmdTime(output, client);
 			})()
 		)
 	})

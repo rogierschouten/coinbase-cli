@@ -1373,8 +1373,10 @@ export interface ExchangeRate {
 }
 
 export interface Time {
-    iso: string;
-    epoch: number;
+    data: {
+        iso: string;
+        epoch: number;
+    }
 }
 
 export class Client {

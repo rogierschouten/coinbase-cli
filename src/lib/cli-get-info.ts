@@ -82,3 +82,11 @@ export async function cmdSpotPrice(
 	output.log("spot: 1 %s = %s %s", price.data.base, price.data.amount, price.data.currency);
 }
 
+export async function cmdTime(
+	output: ConsoleOutput,
+	client: Client
+): Promise<void> {
+	const time = await output.busyWhile(client.getTime(), "Getting time from Coinbase");
+	output.log("Coinbase: %s", time.data.iso);
+	output.log("You     : %s", new Date().toISOString());
+}

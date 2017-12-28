@@ -16,6 +16,7 @@ easily automating trading tasks or inspecting the prices.
 	* `buyprice`: shows the buy price for a given trade pair
 	* `sellprice`: shows the sell price for a given trade pair
 	* `spotprice`: shows the spot price for a given trade pair
+	* `time`: coinbase server current time
 	* `buy`: buy crypto currency with fiat currency
 	* `sell`: sell crypto currency for fiat currency
 	* `withdraw`: withdraw fiat currency
@@ -92,6 +93,13 @@ The other option is to pass all necessary information on the command-line:
 ```shell
 coinbase sell --account="a3b02e94-73f8-557a-a553-5329056236542" --payment-method="453ebbdf-9d09-578f-8fec-ecfd7e7fed17" --amount="all"
 ```
+
+## Troubleshooting
+
+### request timestamp expired
+
+If you get the error `request timestamp expired`, then your system clock is probably off by more than 30 seconds from the coinbase servers.
+Run `coinbase time` to get the time that Coinbase thinks it is.
 
 ## License
 
