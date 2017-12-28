@@ -12,13 +12,13 @@ easily automating trading tasks or inspecting the prices.
 * Non-interactive mode: specify all arguments on the command-line
 * Commands (run `coinbase help <command>` for details):
 	* `accounts`: list your coinbase accounts
-	* `paymentmethods`: list your coinbase payment methods
+	* `buy`: buy crypto currency with fiat currency
 	* `buyprice`: shows the buy price for a given trade pair
+	* `paymentmethods`: list your coinbase payment methods
+	* `sell`: sell crypto currency for fiat currency
 	* `sellprice`: shows the sell price for a given trade pair
 	* `spotprice`: shows the spot price for a given trade pair
 	* `time`: coinbase server current time
-	* `buy`: buy crypto currency with fiat currency
-	* `sell`: sell crypto currency for fiat currency
 	* `withdraw`: withdraw fiat currency
 
 ## Disclaimer
@@ -96,8 +96,6 @@ coinbase sell --account="a3b02e94-73f8-557a-a553-5329056236542" --payment-method
 
 ## Troubleshooting
 
-### request timestamp expired
-
 If you get the error `request timestamp expired`, then your system clock is probably off by more than 30 seconds from the coinbase servers.
 Run `coinbase time` to get the time that Coinbase thinks it is.
 
@@ -112,4 +110,24 @@ License: MIT, see LICENSE file.
 * Dash: XnrCJYkvipLUemUH7VmzpD6vvoQoVj4cVD
 * Ethereum: 0xe324D345857c8802d34c4577fB465E050Cf10771
 * Litecoin: La72oJGP4fZR4wUGaHL4WKN2NE5g8uuiUS
+
+## Change log
+
+### v1.2.0
+
+* Add `accounts` command
+* Add `paymentmethods` command
+* Add `spotprice` command
+* Add `time` command
+* Add `withdraw` command
+
+### v1.1.0
+
+* Add `buy` command
+* Add `buyprice` command
+
+### v1.0.0
+
+* Initial version: `sell` and `sellprice` commands
+
 
