@@ -113,6 +113,10 @@ License: MIT, see LICENSE file.
 
 ## Change log
 
+### v1.2.1
+
+* Fix vulnerable dependencies
+
 ### v1.2.0
 
 * Add `accounts` command
