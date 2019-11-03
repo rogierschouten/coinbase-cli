@@ -103,15 +103,11 @@ Run `coinbase time` to get the time that Coinbase thinks it is.
 
 License: MIT, see LICENSE file.
 
-## Donations
-
-* Bitcoin: 1FytkRspy78HGBJgsieCqgNapxsKSSG6bU
-* Bitcoin Cash: 1DQzYgh6r2R5PvJTckLGdBqqFhKjsmEpAb
-* Dash: XnrCJYkvipLUemUH7VmzpD6vvoQoVj4cVD
-* Ethereum: 0xe324D345857c8802d34c4577fB465E050Cf10771
-* Litecoin: La72oJGP4fZR4wUGaHL4WKN2NE5g8uuiUS
-
 ## Change log
+
+### v1.2.2
+
+* Update dependencies
 
 ### v1.2.1
 
